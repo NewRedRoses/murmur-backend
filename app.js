@@ -17,6 +17,19 @@ app.use(passport.session());
 
 app.use(express.urlencoded({ extended: false }));
 
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    // TODO: get ID from db that matches the id in the parameter.
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
+});
+
 const messagesRouter = require("./routes/messagesRouter");
 const authRouter = require("./routes/authRouter");
 
