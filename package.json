@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "node --watch app.js"
+    "start": "node --env-file=.env app.js",
+    "dev": "node --watch --env-file=.env app.js"
   },
   "keywords": [],
   "author": "",
