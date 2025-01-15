@@ -1,6 +1,7 @@
 const passport = require("passport");
 const localStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
@@ -46,10 +47,17 @@ passport.deserializeUser(async (id, done) => {
 });
 
 function loginPost(req, res, next) {
-  console.log(res.get("origin"));
-  passport.authenticate("local", {
-    successRedirect: "/home",
-    failureRedirect: "/",
+  passport.authenticate("local", { session: false }, (err, user, info) => {
+    if (err || !user) {
+      res.status(400).json({ message: info?.message || "Login failed!" });
+    } else {
+      const token = jwt.sign({ id: user.id }, process.env.SECRET, {
+        expiresIn: "24h",
+      });
+      res.json({
+        token,
+      });
+    }
   })(req, res, next);
 }
 async function signupPost(req, res) {
