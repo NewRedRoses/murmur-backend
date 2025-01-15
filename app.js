@@ -1,10 +1,13 @@
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
+const cors = require("cors");
 
 const app = express();
 
 const PORT = 3000;
+
+app.use(cors());
 
 app.use(
   session({
@@ -15,7 +18,7 @@ app.use(
 );
 app.use(passport.session());
 
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 
 const messagesRouter = require("./routes/messagesRouter");
 const authRouter = require("./routes/authRouter");
