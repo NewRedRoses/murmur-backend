@@ -1,9 +1,13 @@
 const { Router } = require("express");
 
+const verifyToken = require("../middlewares/verifyToken.js");
 const messagesRouter = Router();
 
-messagesRouter.get("/", (req, res) => {
-  res.send("hi from router");
-});
+const {
+  getConversations,
+  getMessages,
+} = require("../controllers/messagesController.js");
+
+messagesRouter.get("/", verifyToken, getConversations);
 
 module.exports = messagesRouter;
