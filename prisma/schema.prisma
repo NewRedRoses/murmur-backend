@@ -8,9 +8,21 @@ datasource db {
 }
 
 model User {
+  id              Int        @id @default(autoincrement())
+  name            String     @db.VarChar(50)
+  password        String
+  dateJoined      DateTime   @default(now())
+  username        String     @db.VarChar(20)
+  receivedMessage Messages[] @relation("receivedMessages")
+  sentMessages    Messages[] @relation("sentMessages")
+}
+
+model Messages {
   id         Int      @id @default(autoincrement())
-  name       String   @db.VarChar(50)
-  password   String
-  dateJoined DateTime @default(now())
-  username   String   @db.VarChar(20)
+  content    String
+  dateSent   DateTime @default(now())
+  receiverId Int
+  senderId   Int
+  receiver   User     @relation(name: "receivedMessages", fields: [receiverId], references: [id])
+  sender     User     @relation(name: "sentMessages", fields: [senderId], references: [id])
 }
