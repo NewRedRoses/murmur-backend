@@ -13,6 +13,7 @@ model User {
   password        String
   dateJoined      DateTime   @default(now())
   username        String     @db.VarChar(20)
+  status          String?    @db.VarChar(50)
   receivedMessage Messages[] @relation("receivedMessages")
   sentMessages    Messages[] @relation("sentMessages")
 }
