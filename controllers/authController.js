@@ -46,7 +46,7 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-function loginPost(req, res, next) {
+async function loginPost(req, res, next) {
   passport.authenticate("local", { session: false }, (err, user, info) => {
     if (err || !user) {
       res.status(400).json({ message: info?.message || "Login failed!" });
@@ -80,5 +80,50 @@ async function signupPost(req, res) {
 function logoutGet(req, res) {
   res.send("WIP - logout");
 }
+function profileGet(req, res) {
+  jwt.verify(req.token, process.env.SECRET, async (error, authData) => {
+    if (error) {
+      res.status(401).end();
+    } else {
+      const userData = await prisma.user.findUnique({
+        where: {
+          id: authData.id,
+        },
+        select: {
+          name: true,
+          username: true,
+          status: true,
+        },
+      });
+      res.json(userData);
+    }
+  });
+}
+function profilePost(req, res) {
+  jwt.verify(req.token, process.env.SECRET, async (error, authData) => {
+    try {
+      if (error) {
+        res.status(300).end();
+      } else {
+        const { name, username, status } = req.body;
+        await prisma.user.update({
+          where: {
+            id: authData.id,
+          },
+          data: {
+            name,
+            username,
+            status,
+          },
+        });
+        console.log(req.body);
+        res.status(200).end();
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(400);
+    }
+  });
+}
 
-module.exports = { loginPost, signupPost, logoutGet };
+module.exports = { loginPost, signupPost, logoutGet, profileGet, profilePost };
