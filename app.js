@@ -22,8 +22,10 @@ app.use(express.urlencoded({ extended: true }));
 
 const messagesRouter = require("./routes/messagesRouter");
 const authRouter = require("./routes/authRouter");
+const profileRouter = require("./routes/profileRouter");
 
 app.use("/api/messages?", messagesRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/profile", profileRouter);
 
 app.listen(PORT, () => console.log(`Launched on ${PORT}`));
