@@ -109,17 +109,18 @@ function postUserMessage(req, res) {
       if (error) {
         return res.sendStatus(403);
       } else {
-        console.log(req.body);
         const { msgReceiverId, msgSenderId, message } = req.body;
-        await prisma.messages.create({
-          data: {
-            receiverId: parseInt(msgReceiverId),
-            senderId: parseInt(msgSenderId),
-            content: message,
-          },
-        });
+        if (message != "") {
+          await prisma.messages.create({
+            data: {
+              receiverId: parseInt(msgReceiverId),
+              senderId: parseInt(msgSenderId),
+              content: message,
+            },
+          });
 
-        res.json({ msg: "success send user a message" });
+          res.json({ msg: "message sent successfully" });
+        }
       }
     } catch (err) {
       console.log(err);
