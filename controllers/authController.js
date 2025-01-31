@@ -63,23 +63,30 @@ async function loginPost(req, res, next) {
 async function signupPost(req, res) {
   try {
     const { fullname, username, password } = req.body;
-    bcrypt.hash(password, 10, async (err, hashedPassword) => {
-      await prisma.user.create({
-        data: {
-          name: fullname,
-          username: username,
-          password: hashedPassword,
-        },
+    if (fullname !== "" && username !== "" && password !== "") {
+      bcrypt.hash(password, 10, async (err, hashedPassword) => {
+        if (err) {
+          res.sendStatus(500);
+        } else {
+          await prisma.user.create({
+            data: {
+              name: fullname,
+              username: username,
+              password: hashedPassword,
+            },
+          });
+        }
       });
-    });
-    res.end();
+      res.sendStatus(200);
+    } else {
+      // allegedly  this is for client-side validation errors
+      res.sendStatus(403);
+    }
   } catch (err) {
     console.log(err);
   }
 }
-function logoutGet(req, res) {
-  res.send("WIP - logout");
-}
+
 function profileGet(req, res) {
   jwt.verify(req.token, process.env.SECRET, async (error, authData) => {
     if (error) {
@@ -106,24 +113,43 @@ function profilePost(req, res) {
         res.status(300).end();
       } else {
         const { name, username, status } = req.body;
-        await prisma.user.update({
-          where: {
-            id: authData.id,
-          },
-          data: {
-            name,
-            username,
-            status,
-          },
-        });
-        console.log(req.body);
-        res.status(200).end();
+        if (name != "" && username != "") {
+          const isUsernameInDb = await checkUsernameInDb(username);
+          if (!isUsernameInDb) {
+            await prisma.user.update({
+              where: {
+                id: authData.id,
+              },
+              data: {
+                name,
+                username,
+                status,
+              },
+            });
+            res.status(200).end();
+          } else {
+            res
+              .status(500)
+              .send("Username already in database. Try a different one.");
+          }
+        } else {
+          res.status(500).send("Name & Username cannot be empty.");
+        }
       }
     } catch (error) {
       console.log(error);
-      res.status(400);
+      res.status(400).send(err);
     }
   });
 }
 
-module.exports = { loginPost, signupPost, logoutGet, profileGet, profilePost };
+const checkUsernameInDb = async (username) => {
+  const profile = await prisma.user.findFirst({
+    where: {
+      username,
+    },
+  });
+  return profile != null ? true : false;
+};
+
+module.exports = { loginPost, signupPost, profileGet, profilePost };
