@@ -27,5 +27,7 @@ const profileRouter = require("./routes/profileRouter");
 app.use("/api/messages?", messagesRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/profile", profileRouter);
-
+app.get("/api/test", (req, res) => {
+  res.send("Backend API responded successful");
+});
 app.listen(PORT, () => console.log(`Launched on ${PORT}`));
