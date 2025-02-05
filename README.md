@@ -1,9 +1,17 @@
-# Murmur.Chat - Back-end
+# Murmur.Chat - Backend 
 
-This repo is for the back-end for my full-stack messaging app called Murmur.
+This repo is for the back-end/API for my full-stack messaging app called Murmur.
 
-The app is primairly built with Express but authentication is handled by Passport.js and JWT to ensure user authentication.
+If you're looking for **Murmur's front-end repo**, please check out [this link](https://github.com/NewRedRoses/murmur-frontend)
 
-## Deployment
+# Tools Used
 
-The front-end is currently deployed on Vercel. You can check it out: [here](https://murmur.chat). Additionally, to learn more about the front-end, you can check out the repo: [here](https://github.com/NewRedRoses/murmur-frontend)
+- The app is primairly built with: 
+  - **Node.Js / Express**: API connection to/from the front-end.
+  - **PostgreSQL / Prisma ORM**: Database hosting for messages.
+  - **Passport.js**: User account authentication.
+  - **JWT**:  Authorization of messages & route access verifications.
+
+# Roadmap 
+
+To be discloused. 
